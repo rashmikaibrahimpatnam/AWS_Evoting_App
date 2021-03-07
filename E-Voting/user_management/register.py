@@ -1,3 +1,4 @@
+import hashlib
 import json
 
 import requests
@@ -40,6 +41,17 @@ def submit_data():
 
         headers = {"Content-type": "application/json"}
         params = {"email_id": user.email}
+        user.password = hashlib.sha256(password.encode("utf-8")).hexdigest()
+
+        # sha256 has no decryption.. the below lines are a way to check if plain password matches or not!
+        # plain_password = "padmesh4"
+        #
+        # hash_obj = hashlib.sha256(plain_password.encode("utf-8")).hexdigest()
+        #
+        # if hash_obj == user.password:
+        #     print("TRUE")
+        # else:
+        #     print("FALSE")
 
         add_user_params = {
             "email_id": user.email,
