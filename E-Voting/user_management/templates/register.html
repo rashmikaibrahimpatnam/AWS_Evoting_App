@@ -6,6 +6,14 @@
     <link rel="stylesheet" href="{{ url_for('register.static',filename='registration.css')}}">
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
     <title>User Registration</title>
+    <style type="text/css">
+    .alert-error {
+        padding: 8px;
+        background-color: #b71c1c;
+        color: white;
+    }
+
+    </style>
 </head>
 <body class="registrationBg">
 <div class="container center-align">
@@ -14,6 +22,13 @@
          style="background: linear-gradient(30deg,#fff 40%,#e8f4f8 50%); border-radius:25px;">
         <div class="card-content">
             <span class="card-title" style="font-weight:bold">Create your account</span>
+
+            <div class="row">
+                {% for message in get_flashed_messages() %}
+                <div class="alert-error">Error: {{ message }}</div>
+                {% endfor %}
+            </div>
+
             <div class="row">
                 <form class="col s12" action="/register/signup" method="POST">
                     <div class="row">
@@ -26,7 +41,7 @@
                         </div>
                         <div class="input-field col s6">
                             <i class="material-icons prefix">account_circle</i>
-                            <input required id="last_name" type="text" class="validate">
+                            <input required id="last_name" name="last_name" type="text" class="validate">
                             <label for="last_name">Last Name</label>
                             <span class="helper-text" data-error="Enter your last name!"></span>
                         </div>
@@ -57,7 +72,7 @@
                         </div>
                         <div class="input-field col s6">
                             <i class="material-icons prefix">email</i>
-                            <input id="email" type="email" required class="validate">
+                            <input id="email" type="email" name="email" required class="validate">
                             <label for="email">Email</label>
                             <span class="helper-text" data-error="Enter your email address!"></span>
                         </div>
@@ -107,6 +122,12 @@ $("#confirm_password").on("keyup", function (e) {
         $('.enableOnInput').prop('disabled', false);
     }
 });
+
+
+
+
+
+
 
 
 
