@@ -1,5 +1,6 @@
 import hashlib
 import json
+from collections import namedtuple
 
 import requests
 from flask import Blueprint, render_template, request, flash
@@ -7,6 +8,10 @@ from flask import Blueprint, render_template, request, flash
 from user_management.User import UserDetails
 
 bp = Blueprint('register', __name__, template_folder="templates", static_folder="static")
+
+
+def json_decoder(user_dictionary):
+    return namedtuple('X', user_dictionary.keys())(*user_dictionary.values())
 
 
 @bp.route("/", methods=['GET'])
@@ -64,7 +69,7 @@ def submit_data():
 
         response = requests.get(get_user_url, params=params, headers=headers)
 
-        user_details = json.loads(response.text, object_hook=UserDetails.decode)
+        user_details = json.loads(response.text, object_hook=json_decoder)
 
         if not bool(user_details):
             response = requests.post(add_user_url, json=add_user_params)
