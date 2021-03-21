@@ -91,14 +91,14 @@ def verify_email_address():
         return render_template("verify_email_address.html")
     else:
         # Call a Lambda to update the user as verified!
-        update_verified_status_url = "https://as5r1zw6c8.execute-api.us-east-1.amazonaws.com/test/usermanagement" \
-                                     "/verifyuser "
+        update_verified_status_url = "https://as5r1zw6c8.execute-api.us-east-1.amazonaws.com/test/verifyuser"
 
         update_user_verification = {
             "email_id": session["email_id"],
             "verified": "Y"
         }
         response = requests.post(update_verified_status_url, json=update_user_verification)
+        print(response.text)
         session.pop("email_id", None)
         session.pop("otp", None)
         flash("You have successfully registered to the application!! Please login to use our system!")
