@@ -18,10 +18,11 @@
         </style>
     </head>
 <body class = "loginBg">
-<div class = "container center-align">
-    <div class="row h-100"></div>
+<div class = "center-align">
+    <div class="row">
+        <div class="col s4 offset-s4">
     <div class="card"
-        style="background: linear-gradient(30deg,#fff 40%,#e8f4f8 50%); border-radius:25px;width: 50rem;align-items: center;">
+        style="background: linear-gradient(30deg,#fff 40%,#e8f4f8 50%); border-radius:25px;align-items: center;">
         <div class="card-content">
             <span class="card-title" style="font-weight:bold">Login</span>
 
@@ -30,18 +31,18 @@
                 <div class="alert-error">Error: {{ message }}</div>
                 {% endfor %}
             </div>
-            <div class="col-lg-4 col-lg-offset-4">
+            <div class="row">
                 <form class="col s12" action="/login/login" method="POST">
                     <div class="row">
-                        <div class="input-field col s6">
+                        <div class="input-field col s9 offset-s1">
                             <i class="material-icons prefix">email</i>
                             <input id="email" type="email" name="email" required class="validate">
                             <label for="email">Email</label>
                             <span class="helper-text" data-error="Enter your email address!"></span>
                         </div>
                     </div>
-                    <div class="row h-100">
-                        <div class="input-field col s6">
+                    <div class="row">
+                        <div class="input-field col s9 offset-s1">
                             <i class="material-icons prefix">lock</i>
                             <input id="password" name="password" minlength="8" required type="password"
                                    class="validate">
@@ -49,7 +50,7 @@
                             <span class="helper-text" data-error="Password must be 8 or more characters long!"></span>
                         </div>
                     </div>
-                    <div class="row h-100">
+                    <div class="row">
                         <div>
                             <button class="btn waves-effect waves-light blue darken-1 enableOnInput" type="submit"
                                     name="action">
@@ -71,6 +72,8 @@
             </div>
         </div>
     </div>
+    </div>
+</div>
 
 </div>
 </body>
