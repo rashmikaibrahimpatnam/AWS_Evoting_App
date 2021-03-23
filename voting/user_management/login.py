@@ -30,8 +30,7 @@ def submit_data():
     password = str(request.form.get("password", ""))
     hashed_pwd = hashlib.sha256(password.encode("utf-8")).hexdigest()
     user = UserDetails(first_name='', last_name='', phone='', email=email, password=hashed_pwd)
-    print(email)
-    print(hashed_pwd)
+ 
     if email == "" or password == "":
         flash("One or more fields are empty!!! Please try again!")
         return render_template("login.html")
@@ -54,7 +53,14 @@ def submit_data():
         if bool(user_details):
             # check for verification code and match the password
             response = requests.post(validate_user_url, json=validate_details)
-            return render_template("home.html")
+            if response.text == 'Invalid email_id':
+                flash('Incorrect password. Try Again')
+                return render_template('login.html')
+            elif response.text == 'Email not verified':
+                flash('Email id not verified')
+                return render_template('login.html')
+            else:
+                return render_template("home.html")
         else:
             flash("The user does not exist. Please register instead!")
             return render_template("register.html")
