@@ -1,19 +1,26 @@
+import hashlib
 import json
+from collections import namedtuple
 
 import requests
-from flask import Blueprint, render_template, request, flash
+from flask import Blueprint, render_template, request, flash, session
 
 from user_management.User import UserDetails
+from user_management.emailService import send_email
 
 bp = Blueprint('register', __name__, template_folder="templates", static_folder="static")
 
 
-@bp.route("/", methods=['GET'])
+def json_decoder(user_dictionary):
+    return namedtuple('X', user_dictionary.keys())(*user_dictionary.values())
+
+
+@bp.route("/register", methods=['GET'])
 def get_register_page():
     return render_template("register.html")
 
 
-@bp.route("/signup", methods=['POST'])
+@bp.route("/register", methods=['POST'])
 def submit_data():
     first_name = str(request.form.get("first_name", ""))
     last_name = str(request.form.get("last_name", ""))
@@ -40,6 +47,17 @@ def submit_data():
 
         headers = {"Content-type": "application/json"}
         params = {"email_id": user.email}
+        user.password = hashlib.sha256(password.encode("utf-8")).hexdigest()
+
+        # sha256 has no decryption.. the below lines are a way to check if plain password matches or not!
+        # plain_password = "padmesh4"
+        #
+        # hash_obj = hashlib.sha256(plain_password.encode("utf-8")).hexdigest()
+        #
+        # if hash_obj == user.password:
+        #     print("TRUE")
+        # else:
+        #     print("FALSE")
 
         add_user_params = {
             "email_id": user.email,
@@ -52,12 +70,35 @@ def submit_data():
 
         response = requests.get(get_user_url, params=params, headers=headers)
 
-        user_details = json.loads(response.text, object_hook=UserDetails.decode)
+        user_details = json.loads(response.text, object_hook=json_decoder)
 
         if not bool(user_details):
             response = requests.post(add_user_url, json=add_user_params)
-            print(response.text)
-            return render_template("login.html")
+            generated_otp = send_email(user.email, user.first_name + ' ' + user.last_name)
+            session["email_id"] = user.email
+            session["otp"] = generated_otp
+            return render_template("verify_email_address.html")
         else:
             flash("The user already exists in the system. Please login instead!")
             return render_template("register.html")
+
+
+@bp.route("/verify_email_address", methods=['POST'])
+def verify_email_address():
+    entered_code = str(request.form.get("code", ""))
+    if session["otp"] != entered_code:
+        flash("The entered code is incorrect!")
+        return render_template("verify_email_address.html")
+    else:
+        # Call a Lambda to update the user as verified!
+        update_verified_status_url = "https://as5r1zw6c8.execute-api.us-east-1.amazonaws.com/test/verifyuser"
+
+        update_user_verification = {
+            "email_id": session["email_id"],
+            "verified": "Y"
+        }
+        response = requests.post(update_verified_status_url, json=update_user_verification)
+        print(response.text)
+        session.pop("email_id", None)
+        session.pop("otp", None)
+        return render_template("login.html")

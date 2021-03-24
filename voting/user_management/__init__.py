@@ -3,7 +3,7 @@ import os
 from flask import Flask
 from flask_material import Material
 
-from . import register, login
+from . import register, login, voterHome
 
 
 def create_app(test_config=None):
@@ -11,12 +11,8 @@ def create_app(test_config=None):
     app.secret_key = os.urandom(24)
     Material(app)
 
-    # a simple page that says hello
-    @app.route('/')
-    def hello():
-        return 'Hello, World!'
-
     app.register_blueprint(register.bp, url_prefix="/register")
     app.register_blueprint(login.bp, url_prefix="/login")
+    app.register_blueprint(voterHome.bp, url_prefix="/voterHome")
 
     return app
