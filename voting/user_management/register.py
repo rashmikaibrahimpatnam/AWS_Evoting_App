@@ -101,5 +101,4 @@ def verify_email_address():
         print(response.text)
         session.pop("email_id", None)
         session.pop("otp", None)
-        flash("You have successfully registered to the application!! Please login to use our system!")
         return render_template("login.html")

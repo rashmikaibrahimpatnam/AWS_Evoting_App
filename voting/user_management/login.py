@@ -1,12 +1,12 @@
 import hashlib
 import json
-import pdb
 from collections import namedtuple
 
 import requests
 from flask import (
-    Blueprint, render_template, request, flash, session
+    Blueprint, render_template, request, flash, session, url_for
 )
+from werkzeug.utils import redirect
 
 from user_management.User import UserDetails
 
@@ -30,7 +30,7 @@ def submit_data():
     password = str(request.form.get("password", ""))
     hashed_pwd = hashlib.sha256(password.encode("utf-8")).hexdigest()
     user = UserDetails(first_name='', last_name='', phone='', email=email, password=hashed_pwd)
- 
+
     if email == "" or password == "":
         flash("One or more fields are empty!!! Please try again!")
         return render_template("login.html")
@@ -60,7 +60,7 @@ def submit_data():
                 flash('Email id not verified')
                 return render_template('login.html')
             else:
-                return render_template("home.html")
+                return redirect(url_for("voterHome.get_voter_home"))
         else:
             flash("The user does not exist. Please register instead!")
             return render_template("register.html")
