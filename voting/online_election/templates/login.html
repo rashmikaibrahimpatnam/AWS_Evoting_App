@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="{{ url_for('login.static',filename='login.css')}}">
+        <link rel="stylesheet" href="{{ url_for('static',filename='login.css')}}">
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
@@ -25,7 +25,6 @@
         style="background: linear-gradient(30deg,#fff 40%,#e8f4f8 50%); border-radius:25px;align-items: center;">
         <div class="card-content">
             <span class="card-title" style="font-weight:bold">Login</span>
-
             <div class="row">
                 {% for message in get_flashed_messages() %}
                 <div class="alert-error">Error: {{ message }}</div>

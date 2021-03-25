@@ -8,7 +8,7 @@ from flask import (
 )
 from werkzeug.utils import redirect
 
-from online_election.User import UserDetails
+from online_election.user_management.User import UserDetails
 
 bp = Blueprint('login', __name__, template_folder="templates", static_folder="static")
 
@@ -38,6 +38,10 @@ def submit_data():
         # fetch data from dynamo for the user, if does not exist, redirect to register page fetch data from dynamo
         # for the user, if exists, check for the verified field, if verified redirect to home page
         session['email_id'] = user.email
+        if str(user.email).lower() == "noreply.horizon.group1@gmail.com":
+            session["role"] = "ADMIN"
+        else:
+            session["role"] = "USER"
         get_user_url = "https://as5r1zw6c8.execute-api.us-east-1.amazonaws.com/test/usermanagement"
         headers = {"Content-type": "application/json"}
         params = {"email_id": user.email}
@@ -60,7 +64,10 @@ def submit_data():
                 flash('Email id not verified')
                 return render_template('login.html')
             else:
-                return redirect(url_for("voterHome.get_voter_home"))
+                if session["role"] == "USER":
+                    return redirect(url_for("voterHome.get_voter_home"))
+                else:
+                    return redirect(url_for("adminHome.get_admin_home"))
         else:
             flash("The user does not exist. Please register instead!")
             return render_template("register.html")
@@ -70,4 +77,5 @@ def submit_data():
 def logout():
     # remove the email from the session if it is present 
     session.pop('email_id', None)
+    session.pop("role", None)
     return render_template("login.html")

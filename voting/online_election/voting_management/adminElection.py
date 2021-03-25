@@ -1,16 +1,16 @@
 import json
-import pdb
 import uuid
 
 import requests
 from flask import Blueprint, render_template, request, flash, session
 
-from online_election.Candidate import Candidate
-from online_election.Election import Election
+from online_election.voting_management.Candidate import Candidate
+from online_election.voting_management.Election import Election
 
 bp = Blueprint('adminElection', __name__, template_folder="templates", static_folder="static")
 
 
+@bp.route("/viewElections", methods=["GET"])
 def view_elections():
     if "email_id" not in session:
         return render_template("view_elections.html")
@@ -73,10 +73,10 @@ def submit_data():
     create_election_url = "https://s9uztjegil.execute-api.us-east-1.amazonaws.com/test/electionmanagement"
     serialized_election = json.dumps(election, default=lambda o: o.__dict__)
     print(serialized_election)
-    pdb.set_trace()
     response = requests.post(create_election_url, data=serialized_election)
     print(response.text)
-    return "Success"
+    flash("Successfully created the election!")
+    return render_template("admin_home.html")
 
 
 def delete_election():

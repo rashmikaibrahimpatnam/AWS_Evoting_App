@@ -5,8 +5,8 @@ from collections import namedtuple
 import requests
 from flask import Blueprint, render_template, request, flash, session
 
-from online_election.User import UserDetails
-from online_election.emailService import send_email
+from online_election.user_management.User import UserDetails
+from online_election.user_management.emailService import send_email
 
 bp = Blueprint('register', __name__, template_folder="templates", static_folder="static")
 
@@ -69,7 +69,7 @@ def submit_data():
         }
 
         response = requests.get(get_user_url, params=params, headers=headers)
-
+        print(response.text)
         user_details = json.loads(response.text, object_hook=json_decoder)
 
         if not bool(user_details):

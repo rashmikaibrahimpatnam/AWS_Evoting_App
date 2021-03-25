@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Home</title>
+    <title>Admin Home</title>
     <link rel="stylesheet" href="{{ url_for('static',filename='login.css')}}">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
@@ -16,6 +16,29 @@
         -webkit-transform: translate(-50%, -50%);
         transform: translate(-50%, -50%);
         }
+        .alert_success {
+        padding: 8px;
+        background-color: green;
+        color: white;
+        }
+        /* The close button */
+          .closebtn {
+          margin-left: 15px;
+          color: white;
+          font-weight: bold;
+          float: right;
+          font-size: 22px;
+          line-height: 20px;
+          cursor: pointer;
+          transition: 0.3s;
+        }
+
+        /* When moving the mouse over the close button */
+        .closebtn:hover {
+        color: black;
+        }
+
+
     </style>
 </head>
 
@@ -23,34 +46,40 @@
 <div>
     <div class="row"></div>
     {% block content %}
-    {% if session['email_id'] and session['role'] == "USER" %}
+    {% if session['email_id'] and session['role'] == "ADMIN" %}
     <div class="row" style="background: linear-gradient(30deg,#fff 40%,#e8f4f8 50%);">
         <div class="row"></div>
         <div class="col s12 card-action right-align">
             <a href="/login/logout" class="btn red">Logout</a>
         </div>
         <div class="row">
+            <div class="row">
+                {% for message in get_flashed_messages() %}
+                <div class="alert_success center-align">
+                    <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                    {{message}}
+                </div>
+                {% endfor %}
+            </div>
             <div class="col s8">
                 <img class="responsive-img" src="../static/images/vote_online.png">
             </div>
             <div class="col s4">
                 <h1>Online Voting</h1>
                 <h6>Welcome to E-Voting!!!
-                    A platform to cast your valuable vote remotely and
-                    elect the appropriate person. Save your time of travelling with the
-                    help of our website to cast your vote within your fingertips using any device
-                    (phone, tablet, PC, etc) that has internet of at least 3G speeds. Also, find out
-                    the results of the election within a day after the election deadline is over!!
+                    This admin portal allows you to view all the elections, find the voting counts,
+                    get results for the election, create new election with the candidates, delete
+                    elections, and edit elections within your fingertips!
                 </h6>
                 <br/>
                 <div>
                     <div class="row center-align">
-                        <a href="/elections/ongoing" class="waves-effect waves-light btn-small blue"><i
-                                class="material-icons left">star_border</i>Ongoing Elections</a>
+                        <a href="/adminElection/viewElections" class="waves-effect waves-light btn-small blue"><i
+                                class="material-icons left">star_border</i>View All Elections</a>
                     </div>
                     <div class="row center-align">
-                        <a href="/elections/submitted" class="waves-effect waves-light btn-small green"><i
-                                class="material-icons left">star_border</i>Submitted Elections</a>
+                        <a href="/adminElection/createElection" class="waves-effect waves-light btn-small green"><i
+                                class="material-icons left">star_border</i>Create Election</a>
                     </div>
                 </div>
             </div>

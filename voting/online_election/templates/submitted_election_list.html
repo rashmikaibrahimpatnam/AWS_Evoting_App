@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
-    <title>Ongoing election list</title>
+    <title>Submitted Votes list</title>
     <style>
         .screenCenter {
         position: fixed;
@@ -22,8 +22,6 @@
         background-color: #b71c1c;
         color: white;
     }
-
-
 
     </style>
 </head>
@@ -39,7 +37,7 @@
         </div>
         <div class="row center-align">
             <div class="col s8 offset-s2">
-                <h1>Your available Ongoing Elections</h1>
+                <h1>Your Submitted votes</h1>
                 <br/>
                 <div class="row">
                     <table class="highlight responsive-table">
@@ -51,7 +49,7 @@
                             <th>Type</th>
                             <th>Start Date</th>
                             <th>End Date</th>
-                            <th>Action</th>
+                            <th>Candidate Selected</th>
                         </tr>
                         </thead>
 
@@ -66,11 +64,11 @@
                             <td>{{election_list[i].start_date}}</td>
                             <td>{{election_list[i].end_date}}</td>
                             <td>
-                                <a href="/elections/castVote/{{election_list[i].election_id}}"
-                                   class="indigo-text darken-1"
-                                   style="text-decoration:underline;">
-                                    Cast your vote!
-                                </a>
+                                {%for j in range(0, len)%}
+                                    {%if submitted_elections[j].election_id == election_list[i].election_id%}
+                                        {{submitted_elections[j].candidate_voted}}
+                                    {%endif%}
+                                {%endfor%}
                             </td>
 
                         </tr>
@@ -78,7 +76,7 @@
                         {% else %}
                         <tr>
                             <td class="center-align" colspan="7" style="color:red">
-                                No elections are currently available for you to cast a vote!
+                                You have not yet voted for any elections!
                             </td>
                         </tr>
                         {% endif %}

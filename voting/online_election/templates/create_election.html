@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('adminElection.static',filename='create_election.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static',filename='create_election.css')}}">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
@@ -22,13 +22,15 @@
         background-color: #b71c1c;
         color: white;
     }
+
+
     </style>
 </head>
 <body class="createElectionBg">
 <div class="container center-align">
     <div class="row"></div>
     {% block content %}
-    {% if session['email_id'] %}
+    {% if session['email_id'] and session['role'] == "ADMIN" %}
     <div class="card center-align"
          style="background: linear-gradient(30deg,#fff 40%,#e8f4f8 50%); border-radius:25px;">
         <div class="card-content">
@@ -93,13 +95,19 @@
                             </button>
                         </div>
                     </div>
-                    <div class="row">
-                        <div>
+                    <div class="row container">
+                        <div class="col s4 offset-s4">
                             <button class="btn waves-effect waves-light blue darken-1" type="submit"
                                     name="action">
                                 Create Election
                                 <i class="material-icons right">send</i>
                             </button>
+                        </div>
+                        <div class="col s4">
+                            <a class="btn waves-effect waves-light red darken-1" href="/adminHome/adminHome">
+                                Cancel
+                                <i class="material-icons right">cancel</i>
+                            </a>
                         </div>
                     </div>
                 </form>
@@ -147,5 +155,7 @@
                 +    "</div>"
                 +    "</div>"
 	}
+
+
 </script>
 </html>
