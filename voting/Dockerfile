@@ -19,7 +19,7 @@ EXPOSE 5000
 COPY . /app
 
 
-ENV FLASK_APP=user_management
+ENV FLASK_APP=online_election
 
 
 ENV FLASK_RUN_PORT=5000

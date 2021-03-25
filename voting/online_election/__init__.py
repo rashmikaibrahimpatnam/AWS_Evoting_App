@@ -3,7 +3,7 @@ import os
 from flask import Flask
 from flask_material import Material
 
-from . import register, login, voterHome
+from . import register, login, voterHome, adminElection, elections
 
 
 def create_app(test_config=None):
@@ -14,5 +14,6 @@ def create_app(test_config=None):
     app.register_blueprint(register.bp, url_prefix="/register")
     app.register_blueprint(login.bp, url_prefix="/login")
     app.register_blueprint(voterHome.bp, url_prefix="/voterHome")
-
+    app.register_blueprint(adminElection.bp, url_prefix="/adminElection")
+    app.register_blueprint(elections.bp, url_prefix="/elections")
     return app

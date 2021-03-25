@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('adminElection.static',filename='create_election.css')}}">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <title>Election Creation</title>
+    <style>
+        .screenCenter {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        -webkit-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+        }
+    .alert-error {
+        padding: 8px;
+        background-color: #b71c1c;
+        color: white;
+    }
+    </style>
+</head>
+<body class="createElectionBg">
+<div class="container center-align">
+    <div class="row"></div>
+    {% block content %}
+    {% if session['email_id'] %}
+    <div class="card center-align"
+         style="background: linear-gradient(30deg,#fff 40%,#e8f4f8 50%); border-radius:25px;">
+        <div class="card-content">
+            <span class="card-title" style="font-weight:bold">Create Election</span>
+            <div class="row">
+                {% for message in get_flashed_messages() %}
+                <div class="alert-error">Error: {{ message }}</div>
+                {% endfor %}
+            </div>
+            <div class="row">
+                <form class="col s12" action="/adminElection/saveElectionDetails" method="POST">
+                    <div class="row">
+                        <div class="input-field col s10">
+                            <i class="material-icons prefix">create</i>
+                            <input required name="election_type" id="election_type" type="text"
+                                   class="validate">
+                            <label for="election_type">Enter Election Type (MLA, MP, Ward, etc.)</label>
+                            <span class="helper-text" data-error="Enter the election type!"></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s10">
+                            <i class="material-icons prefix">create</i>
+                            <input required name="election_title" id="election_title" type="text"
+                                   class="validate">
+                            <label for="election_title">Enter Election Title</label>
+                            <span class="helper-text" data-error="Enter the election title!"></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s10">
+                            <i class="material-icons prefix">short_text</i>
+                            <input required name="election_text" id="election_text" type="text"
+                                   class="validate">
+                            <label for="election_text">Enter Election Description</label>
+                            <span class="helper-text" data-error="Enter the election description!"></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s5">
+                            <i class="material-icons prefix">date_range</i>
+                            <input required name="start_date" id="start_date" type="text"
+                                   class="datepicker">
+                            <label for="start_date">Enter Election Start Date</label>
+                            <span class="helper-text" data-error="Choose the election start date!"></span>
+                        </div>
+                        <div class="input-field col s5">
+                            <i class="material-icons prefix">date_range</i>
+                            <input required name="end_date" id="end_date" type="text"
+                                   class="datepicker">
+                            <label for="end_date">Enter Election End Date</label>
+                            <span class="helper-text" data-error="Enter the election end date!"></span>
+                        </div>
+                    </div>
+                    <div id="addedCandidates" style="display: none"></div>
+                    <div class="row" id="addCandidatesBtn">
+                        <div class="right-align col s4 offset-s8">
+                            <button class="btn waves-effect waves-light green darken-1" type="button"
+                                    style="right: 0" onclick="showMoreOptions()">
+                                Add Candidate
+                                <i class="material-icons right">add_circle_outline</i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div>
+                            <button class="btn waves-effect waves-light blue darken-1" type="submit"
+                                    name="action">
+                                Create Election
+                                <i class="material-icons right">send</i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="screenCenter" style="font-size:xx-large;color:white">
+        <div class="row center-align">
+            You are not authorized to use this system! Please login to continue!!
+        </div>
+        <div class="row center-align">
+            <a href="/login/login" class="indigo-text darken-1"
+               style="text-decoration:underline;">
+                Login here
+            </a>
+        </div>
+    </div>
+    {% endif %}
+    {% endblock content %}
+</div>
+</body>
+<script>
+     $(document).ready(function() {
+        $(".datepicker").datepicker({
+            defaultDate: new Date(),
+            format: "dd/mm/yyyy"
+        });
+     });
+
+    function showMoreOptions() {
+		document.getElementById("addedCandidates").style.display = "block";
+		document.getElementById("addedCandidates").innerHTML += "<br /><div class='row'>"
+                + "<div class='input-field col s10'>"
+                +   "<i class='material-icons prefix'>account_circle</i>"
+                +   "<input required name='candidate' type='text'>"
+                +   "<label for='candidate'>Enter the candidate name</label>"
+                +   "<span class='helper-text' data-error='Enter the candidate name!'></span></div></div>"
+                +   "<div class='row'>"
+                +   "<div class='input-field col s10'>"
+                +    "<i class='material-icons prefix'>flag</i>"
+                +    "<input required name='candidate_party' type='text'>"
+                +    "<label for='candidate_party'>Enter the candidate party</label>"
+                +    "<span class='helper-text' data-error='Enter the candidate party!'></span>"
+                +    "</div>"
+                +    "</div>"
+	}
+</script>
+</html>

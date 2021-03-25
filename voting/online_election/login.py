@@ -8,7 +8,7 @@ from flask import (
 )
 from werkzeug.utils import redirect
 
-from user_management.User import UserDetails
+from online_election.User import UserDetails
 
 bp = Blueprint('login', __name__, template_folder="templates", static_folder="static")
 

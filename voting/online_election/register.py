@@ -5,8 +5,8 @@ from collections import namedtuple
 import requests
 from flask import Blueprint, render_template, request, flash, session
 
-from user_management.User import UserDetails
-from user_management.emailService import send_email
+from online_election.User import UserDetails
+from online_election.emailService import send_email
 
 bp = Blueprint('register', __name__, template_folder="templates", static_folder="static")
 
