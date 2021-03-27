@@ -7,12 +7,19 @@ from flask import Blueprint, render_template, request, flash, session
 
 from user_management.User import UserDetails
 from user_management.emailService import send_email
+from user_management.access_secmanager import SecretManager
 
 bp = Blueprint('register', __name__, template_folder="templates", static_folder="static")
 
 
 def json_decoder(user_dictionary):
     return namedtuple('X', user_dictionary.keys())(*user_dictionary.values())
+
+def fetch_secret_key():
+    secret_name = "usermgmt/usrmgmtkey"
+    key_name = "UsermgmtAPIKey"
+    secret = SecretManager().get_secret(secret_name,key_name)
+    return secret
 
 
 @bp.route("/register", methods=['GET'])
@@ -42,10 +49,11 @@ def submit_data():
         # 3. Once inserted, send an email with a verification code
         # 4. Render a template which verifies that verification code
 
-        get_user_url = " https://as5r1zw6c8.execute-api.us-east-1.amazonaws.com/test/usermanagement"
+        secret = fetch_secret_key()
+        get_user_url = "https://as5r1zw6c8.execute-api.us-east-1.amazonaws.com/test/usermanagement"
         add_user_url = "https://as5r1zw6c8.execute-api.us-east-1.amazonaws.com/test/usermanagement"
 
-        headers = {"Content-type": "application/json"}
+        headers = {"Content-type": "application/json","x-api-key": secret,"authorizationToken":secret}
         params = {"email_id": user.email}
         user.password = hashlib.sha256(password.encode("utf-8")).hexdigest()
 
@@ -69,11 +77,15 @@ def submit_data():
         }
 
         response = requests.get(get_user_url, params=params, headers=headers)
+        if "Unauthorized" in response.text or "Forbidden" in response.text:
+                return render_template('error.html')
 
         user_details = json.loads(response.text, object_hook=json_decoder)
 
         if not bool(user_details):
-            response = requests.post(add_user_url, json=add_user_params)
+            response = requests.post(add_user_url, json=add_user_params,headers=headers)
+            if "Unauthorized" in response.text or "Forbidden" in response.text:
+                return render_template('error.html')
             generated_otp = send_email(user.email, user.first_name + ' ' + user.last_name)
             session["email_id"] = user.email
             session["otp"] = generated_otp
@@ -85,6 +97,7 @@ def submit_data():
 
 @bp.route("/verify_email_address", methods=['POST'])
 def verify_email_address():
+    secret = fetch_secret_key()
     entered_code = str(request.form.get("code", ""))
     if session["otp"] != entered_code:
         flash("The entered code is incorrect!")
@@ -92,12 +105,15 @@ def verify_email_address():
     else:
         # Call a Lambda to update the user as verified!
         update_verified_status_url = "https://as5r1zw6c8.execute-api.us-east-1.amazonaws.com/test/verifyuser"
+        headers = {"Content-type": "application/json","x-api-key": secret,"authorizationToken":secret}
 
         update_user_verification = {
             "email_id": session["email_id"],
             "verified": "Y"
         }
-        response = requests.post(update_verified_status_url, json=update_user_verification)
+        response = requests.post(update_verified_status_url, json=update_user_verification,headers=headers)
+        if "Unauthorized" in response.text or "Forbidden" in response.text:
+                return render_template('error.html')
         print(response.text)
         session.pop("email_id", None)
         session.pop("otp", None)

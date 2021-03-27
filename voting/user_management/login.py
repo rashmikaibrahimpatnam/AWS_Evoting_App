@@ -1,7 +1,6 @@
 import hashlib
 import json
 from collections import namedtuple
-
 import requests
 from flask import (
     Blueprint, render_template, request, flash, session, url_for
@@ -9,6 +8,7 @@ from flask import (
 from werkzeug.utils import redirect
 
 from user_management.User import UserDetails
+from user_management.access_secmanager import SecretManager
 
 bp = Blueprint('login', __name__, template_folder="templates", static_folder="static")
 
@@ -23,6 +23,11 @@ def get_login_page():
 def json_decoder(user_dictionary):
     return namedtuple('X', user_dictionary.keys())(*user_dictionary.values())
 
+def fetch_secret_key():
+    secret_name = "usermgmt/usrmgmtkey"
+    key_name = "UsermgmtAPIKey"
+    secret = SecretManager().get_secret(secret_name,key_name)
+    return secret
 
 @bp.route("/login", methods=['POST'])
 def submit_data():
@@ -37,30 +42,37 @@ def submit_data():
     else:
         # fetch data from dynamo for the user, if does not exist, redirect to register page fetch data from dynamo
         # for the user, if exists, check for the verified field, if verified redirect to home page
+        secret = fetch_secret_key()
         session['email_id'] = user.email
         get_user_url = "https://as5r1zw6c8.execute-api.us-east-1.amazonaws.com/test/usermanagement"
-        headers = {"Content-type": "application/json"}
+        headers = {"Content-type": "application/json","x-api-key":secret,"authorizationToken":secret}
         params = {"email_id": user.email}
+
         response = requests.get(get_user_url, params=params, headers=headers)
+        if "Unauthorized" in response.text or "Forbidden" in response.text:
+                return render_template('error.html')
         user_details = json.loads(response.text, object_hook=json_decoder)
 
         validate_details = {
             'email_id': user.email,
             'password': user.password
         }
-        validate_user_url = "https://as5r1zw6c8.execute-api.us-east-1.amazonaws.com/test/login"
+        validate_user_url = "https://as5r1zw6c8.execute-api.us-east-1.amazonaws.com/test/login"        
 
         if bool(user_details):
             # check for verification code and match the password
-            response = requests.post(validate_user_url, json=validate_details)
+            response = requests.post(validate_user_url, json=validate_details, headers=headers)
             if response.text == 'Invalid email_id':
                 flash('Incorrect password. Try Again')
                 return render_template('login.html')
             elif response.text == 'Email not verified':
                 flash('Email id not verified')
                 return render_template('login.html')
-            else:
+            elif "email_id" in response.text:
                 return redirect(url_for("voterHome.get_voter_home"))
+            elif "Unauthorized" in response.text or "Forbidden" in response.text:
+                return render_template('error.html')
+
         else:
             flash("The user does not exist. Please register instead!")
             return render_template("register.html")
