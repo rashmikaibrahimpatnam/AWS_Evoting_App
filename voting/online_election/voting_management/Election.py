@@ -1,6 +1,6 @@
 class Election:
     def __init__(self, election_id, election_type, election_text, election_title, election_candidates,
-                 election_start_date, election_end_date):
+                 election_start_date, election_end_date, results_published):
         self.election_id = election_id
         self.election_type = election_type
         self.election_text = election_text
@@ -8,6 +8,7 @@ class Election:
         self.election_candidates = election_candidates
         self.start_date = election_start_date
         self.end_date = election_end_date
+        self.results_published = results_published
 
     def calculate_winner(self, election_id):
         pass

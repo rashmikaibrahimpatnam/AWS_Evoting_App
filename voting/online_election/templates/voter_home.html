@@ -16,6 +16,28 @@
         -webkit-transform: translate(-50%, -50%);
         transform: translate(-50%, -50%);
         }
+        .alert_success {
+        padding: 8px;
+        background-color: green;
+        color: white;
+        }
+        /* The close button */
+          .closebtn {
+          margin-left: 15px;
+          color: white;
+          font-weight: bold;
+          float: right;
+          font-size: 22px;
+          line-height: 20px;
+          cursor: pointer;
+          transition: 0.3s;
+        }
+
+        /* When moving the mouse over the close button */
+        .closebtn:hover {
+        color: black;
+        }
+
     </style>
 </head>
 
@@ -30,6 +52,14 @@
             <a href="/login/logout" class="btn red">Logout</a>
         </div>
         <div class="row">
+            <div class="row">
+                {% for message in get_flashed_messages() %}
+                <div class="alert_success center-align">
+                    <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                    {{message}}
+                </div>
+                {% endfor %}
+            </div>
             <div class="col s8">
                 <img class="responsive-img" src="../static/images/vote_online.png">
             </div>

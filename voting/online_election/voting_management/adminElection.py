@@ -2,7 +2,8 @@ import json
 import uuid
 
 import requests
-from flask import Blueprint, render_template, request, flash, session
+from flask import Blueprint, render_template, request, flash, session, url_for
+from werkzeug.utils import redirect
 
 from online_election.voting_management.Candidate import Candidate
 from online_election.voting_management.Election import Election
@@ -67,7 +68,7 @@ def submit_data():
 
     election_id = str(uuid.uuid4())
     election = Election(election_id, election_type, election_text, election_title, candidate_list,
-                        election_start_date, election_end_date)
+                        election_start_date, election_end_date, "N")
     print(str(election))
 
     create_election_url = "https://s9uztjegil.execute-api.us-east-1.amazonaws.com/test/electionmanagement"
@@ -75,8 +76,8 @@ def submit_data():
     print(serialized_election)
     response = requests.post(create_election_url, data=serialized_election)
     print(response.text)
-    flash("Successfully created the election!")
-    return render_template("admin_home.html")
+    session["message"] = "Successfully created the election!"
+    return redirect(url_for("adminHome.get_admin_home"))
 
 
 def delete_election():
