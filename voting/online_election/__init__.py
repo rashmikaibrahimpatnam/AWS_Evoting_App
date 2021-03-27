@@ -3,6 +3,7 @@ import os
 from flask import Flask
 from flask_material import Material
 
+from . import error
 from . import index
 from .user_management import register, login, voterHome, adminHome
 from .voting_management import adminElection, elections
@@ -19,4 +20,5 @@ def create_app(test_config=None):
     app.register_blueprint(elections.bp, url_prefix="/elections")
     app.register_blueprint(index.bp, url_prefix="/")
     app.register_blueprint(adminHome.bp, url_prefix="/adminHome")
+    app.register_blueprint(error.bp, url_prefix="/")
     return app
