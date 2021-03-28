@@ -1,5 +1,7 @@
 import json
 import uuid
+from collections import namedtuple
+from datetime import date
 
 import requests
 from flask import Blueprint, render_template, request, flash, session, url_for
@@ -11,10 +13,36 @@ from online_election.voting_management.Election import Election
 bp = Blueprint('adminElection', __name__, template_folder="templates", static_folder="static")
 
 
+def json_decoder(user_dictionary):
+    return namedtuple('X', user_dictionary.keys())(*user_dictionary.values())
+
+
 @bp.route("/viewElections", methods=["GET"])
 def view_elections():
     if "email_id" not in session:
-        return render_template("view_elections.html")
+        return render_template("admin_election_list.html")
+    get_elections_url = "https://s9uztjegil.execute-api.us-east-1.amazonaws.com/test/votingmanagement"
+    headers = {"Content-type": "application/json"}
+    params = {"email_id": session["email_id"]}
+
+    response = requests.get(get_elections_url, params=params, headers=headers)
+    election_list_response = json.loads(response.text, object_hook=json_decoder)
+    elections = []
+    for election_item in election_list_response.elections:
+        print(election_item.election_candidates)
+        election = Election(election_item.election_id, election_item.election_type,
+                            election_item.election_text,
+                            election_item.election_title,
+                            election_item.election_candidates,
+                            election_item.start_date, election_item.end_date,
+                            election_item.results_published)
+        elections.append(election)
+
+    if "message" in session:
+        flash(session["message"])
+        session.pop("message", None)
+    return render_template("admin_election_list.html", election_list=elections, len=len(elections)
+                           , current_date=date.today().strftime("%d/%m/%Y"))
 
 
 @bp.route("/createElection", methods=["GET"])
@@ -80,6 +108,14 @@ def submit_data():
     return redirect(url_for("adminHome.get_admin_home"))
 
 
-def delete_election():
+@bp.route('/publishElection/<string:election_id>', methods=['GET'])
+def publish_election(election_id):
     if "email_id" not in session:
         return render_template("delete_election.html")
+    print(election_id)
+    publish_election_url = "https://s9uztjegil.execute-api.us-east-1.amazonaws.com/test/resultsmanagement"
+    response = requests.post(publish_election_url, json={"election_id": election_id})
+    print(response.text)
+    session["message"] = "Successfully published the election!"
+    # sns mail must be sent
+    return redirect(url_for("adminElection.view_elections"))

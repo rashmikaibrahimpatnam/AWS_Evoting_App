@@ -6,7 +6,7 @@ from botocore.exceptions import ClientError
 from online_election.config import ConfigParse
 
 
-class SecretManager:
+class SecretManager():
 
     def get_secret(self, secret_name, key_name):
         keys = ConfigParse().fetch_keys()
