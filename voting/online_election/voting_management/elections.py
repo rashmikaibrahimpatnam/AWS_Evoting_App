@@ -31,7 +31,7 @@ def get_ongoing_elections():
 
     response = requests.get(get_elections_url, params=params, headers=headers)
     if "Unauthorized" in response.text or "Forbidden" in response.text:
-        return render_template('error.html')
+        return redirect(url_for("error.get_unauthorized_error_page"))
     election_list_response = json.loads(response.text, object_hook=json_decoder)
     submitted_elections = election_list_response.submittedElections
     elections = []
@@ -72,7 +72,7 @@ def get_submitted_elections():
 
     response = requests.get(get_elections_url, params=params, headers=headers)
     if "Unauthorized" in response.text or "Forbidden" in response.text:
-        return render_template('error.html')
+        return redirect(url_for("error.get_unauthorized_error_page"))
     election_list_response = json.loads(response.text, object_hook=json_decoder)
     submitted_elections = election_list_response.submittedElections
     elections = []
@@ -110,7 +110,7 @@ def get_cast_vote_page(election_id):
     params = {"election_id": election_id}
     response = requests.get(get_election_by_id_url, params=params, headers=headers)
     if "Unauthorized" in response.text or "Forbidden" in response.text:
-        return render_template('error.html')
+        return redirect(url_for("error.get_unauthorized_error_page"))
     election_details = json.loads(response.text, object_hook=json_decoder)
     return render_template("cast_election.html", election=election_details,
                            len=len(election_details.election_candidates))
@@ -137,7 +137,7 @@ def cast_vote():
 
     response = requests.post(cast_your_vote_url, json=cast_vote_params,headers=headers)
     if "Unauthorized" in response.text or "Forbidden" in response.text:
-        return render_template('error.html')
+        return redirect(url_for("error.get_unauthorized_error_page"))
     details = json.loads(response.text)
     session["message"] = "Successfully created the election!"
     # sns mail must be sent

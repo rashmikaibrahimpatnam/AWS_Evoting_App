@@ -1,7 +1,7 @@
 import hashlib
 import json
 from collections import namedtuple
-
+import pdb
 import requests
 from flask import (
     Blueprint, render_template, request, flash, session, url_for
@@ -46,6 +46,7 @@ def submit_data():
         # fetch data from dynamo for the user, if does not exist, redirect to register page fetch data from dynamo
         # for the user, if exists, check for the verified field, if verified redirect to home page
         secret = fetch_secret_key()
+        pdb.set_trace()
         session['email_id'] = user.email
         if str(user.email).lower() == "noreply.horizon.group1@gmail.com":
             session["role"] = "ADMIN"
@@ -57,7 +58,7 @@ def submit_data():
 
         response = requests.get(get_user_url, params=params, headers=headers)
         if "Unauthorized" in response.text or "Forbidden" in response.text:
-            return render_template('error.html')
+            return redirect(url_for("error.get_unauthorized_error_page"))
         user_details = json.loads(response.text, object_hook=json_decoder)
 
         validate_details = {
