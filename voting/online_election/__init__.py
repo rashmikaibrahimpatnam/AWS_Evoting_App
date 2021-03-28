@@ -21,4 +21,5 @@ def create_app(test_config=None):
     app.register_blueprint(index.bp, url_prefix="/")
     app.register_blueprint(adminHome.bp, url_prefix="/adminHome")
     app.register_blueprint(error.bp, url_prefix="/")
+
     return app

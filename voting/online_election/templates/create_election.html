@@ -42,6 +42,16 @@
             </div>
             <div class="row">
                 <form class="col s12" action="/adminElection/saveElectionDetails" method="POST">
+
+                    <div class="row">
+                        <div class="input-field col s10">
+                            <i class="material-icons prefix">create</i>
+                            <input required name="election_title" id="election_title" type="text"
+                                   class="validate">
+                            <label for="election_title">Enter Election Name</label>
+                            <span class="helper-text" data-error="Enter the election title!"></span>
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="input-field col s10">
                             <i class="material-icons prefix">create</i>
@@ -51,15 +61,7 @@
                             <span class="helper-text" data-error="Enter the election type!"></span>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="input-field col s10">
-                            <i class="material-icons prefix">create</i>
-                            <input required name="election_title" id="election_title" type="text"
-                                   class="validate">
-                            <label for="election_title">Enter Election Title</label>
-                            <span class="helper-text" data-error="Enter the election title!"></span>
-                        </div>
-                    </div>
+
                     <div class="row">
                         <div class="input-field col s10">
                             <i class="material-icons prefix">short_text</i>
@@ -69,6 +71,7 @@
                             <span class="helper-text" data-error="Enter the election description!"></span>
                         </div>
                     </div>
+
                     <div class="row">
                         <div class="input-field col s5">
                             <i class="material-icons prefix">date_range</i>
@@ -85,16 +88,32 @@
                             <span class="helper-text" data-error="Enter the election end date!"></span>
                         </div>
                     </div>
-                    <div id="addedCandidates" style="display: none"></div>
-                    <div class="row" id="addCandidatesBtn">
-                        <div class="right-align col s4 offset-s8">
-                            <button class="btn waves-effect waves-light green darken-1" type="button"
-                                    style="right: 0" onclick="showMoreOptions()">
-                                Add Candidate
-                                <i class="material-icons right">add_circle_outline</i>
-                            </button>
-                        </div>
+                    <div >
+                        <label class="container1" style="color: black" ><h6>Choose candidates:</h6></label><br>
+                        <label class="container1" style="color: black">Candidate 1
+  <input type="checkbox" name="election_candidates" id="election_candidates" value="Candidate 1">
+  <span class="checkmark"></span>
+</label><br>
+
+<label class="container1" style="color: black" >Candidate 2
+  <input type="checkbox" name="election_candidates" value="Candidate 2">
+  <span class="checkmark"></span>
+</label><br>
+                        <label class="container1" style="color: black" >Candidate 3
+  <input type="checkbox" name="election_candidates" value="Candidate 3">
+  <span class="checkmark"></span>
+</label><br>
+                        <label class="container1" style="color: black" >Candidate 4
+  <input type="checkbox" name="election_candidates" value="Candidate 4">
+  <span class="checkmark"></span>
+</label><br>
+                        <label class="container1" style="color: black">Candidate 5
+  <input type="checkbox" name="election_candidates" id="election_candidates" value="Candidate 5">
+  <span class="checkmark"></span>
+</label><br>
                     </div>
+                        <br>
+
                     <div class="row container">
                         <div class="col s4 offset-s4">
                             <button class="btn waves-effect waves-light blue darken-1" type="submit"

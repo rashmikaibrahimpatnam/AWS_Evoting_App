@@ -14,7 +14,26 @@ bp = Blueprint('adminElection', __name__, template_folder="templates", static_fo
 @bp.route("/viewElections", methods=["GET"])
 def view_elections():
     if "email_id" not in session:
-        return render_template("view_elections.html")
+        return render_template("viewElections.html")
+    get_elections_url = "https://s9uztjegil.execute-api.us-east-1.amazonaws.com/test/viewelections"
+    headers = {"Content-type": "application/json"}
+    params = {"email_id": session["email_id"]}
+    response = requests.get(get_elections_url, params=params, headers=headers)
+    election_list_response = json.loads(response.text)
+    # submitted_elections = election_list_response.submittedElections
+    elections = []
+    print(election_list_response)
+    for election_item in election_list_response:
+        print(election_item)
+        print(election_item['election_candidates'])
+        election = Election(election_item['election_id'], election_item['election_type'],
+                            election_item['election_text'],
+                            election_item['election_title'],
+                            election_item['election_candidates'],
+                            election_item['start_date'], election_item['end_date'],
+                            election_item['results_published'])
+        elections.append(election)
+    return render_template("viewElections.html", election_list=elections, len=len(elections))
 
 
 @bp.route("/createElection", methods=["GET"])
@@ -33,7 +52,7 @@ def submit_data():
     election_start_date = (request.form.get("start_date", ""))
     election_end_date = (request.form.get("end_date", ""))
     election_candidate_name = request.form.getlist("candidate")
-    election_candidate_party = request.form.getlist("candidate_party")
+    #election_candidate_party = request.form.getlist("candidate_party")
 
     if election_type == "":
         flash("Election type is required!!")
@@ -50,21 +69,21 @@ def submit_data():
     if election_end_date is None:
         flash("Election end date is required!!")
         return render_template("create_election.html")
-    if election_candidate_name is None or election_candidate_party is None:
+    if election_candidate_name is None:
         flash("Two or more candidates must be included in the election in order to cast a vote!")
         return render_template("create_election.html")
-    if len(election_candidate_name) <= 1 or len(election_candidate_party) <= 1:
+    if len(election_candidate_name) <= 1:
         flash("Two or more candidates must be included in the election in order to cast a vote!")
         return render_template("create_election.html")
     if election_start_date >= election_end_date:
         flash("The start date must be less than the end date!!")
         return render_template("create_election.html")
 
-    candidate_list = []
+    #candidate_list = []
 
-    for i, j in zip(election_candidate_name, election_candidate_party):
-        candidate = Candidate(str(i), str(j))
-        candidate_list.append(candidate)
+    #for i, j in zip(election_candidate_name, election_candidate_party):
+     #   candidate = Candidate(str(i), str(j))
+      #  candidate_list.append(candidate)
 
     election_id = str(uuid.uuid4())
     election = Election(election_id, election_type, election_text, election_title, candidate_list,
