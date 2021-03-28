@@ -1,7 +1,7 @@
 import configparser
 
 
-class ConfigParse:
+class ConfigParse():
     
     def fetch_keys(self):
         config = configparser.ConfigParser()

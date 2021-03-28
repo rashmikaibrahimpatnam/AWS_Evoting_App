@@ -140,4 +140,5 @@ def cast_vote():
         return render_template('error.html')
     details = json.loads(response.text)
     session["message"] = "Successfully created the election!"
+    # sns mail must be sent
     return render_template("voter_home.html")
