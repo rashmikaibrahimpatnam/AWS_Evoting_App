@@ -6,10 +6,9 @@ import requests
 from flask import (
     Blueprint, render_template, request, flash, session, url_for
 )
-from werkzeug.utils import redirect
-
 from online_election.access_secmanager import SecretManager
 from online_election.user_management.User import UserDetails
+from werkzeug.utils import redirect
 
 bp = Blueprint('login', __name__, template_folder="templates", static_folder="static")
 
@@ -56,8 +55,9 @@ def submit_data():
         params = {"email_id": user.email}
 
         response = requests.get(get_user_url, params=params, headers=headers)
+        print(response.text)
         if "Unauthorized" in response.text or "Forbidden" in response.text:
-            return render_template('error.html')
+            return redirect(url_for("error.get_unauthorized_error_page"))
         user_details = json.loads(response.text, object_hook=json_decoder)
 
         validate_details = {
@@ -92,4 +92,4 @@ def logout():
     # remove the email from the session if it is present 
     session.pop('email_id', None)
     session.pop("role", None)
-    return render_template("login.html")
+    return redirect(url_for("login.login"))
