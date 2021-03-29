@@ -5,10 +5,11 @@ from datetime import date
 
 import requests
 from flask import Blueprint, render_template, request, flash, session, url_for
+from werkzeug.utils import redirect
+
 from online_election.access_secmanager import SecretManager
 from online_election.voting_management.Candidate import Candidate
 from online_election.voting_management.Election import Election
-from werkzeug.utils import redirect
 
 bp = Blueprint('adminElection', __name__, template_folder="templates", static_folder="static")
 

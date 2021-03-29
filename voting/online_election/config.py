@@ -2,7 +2,7 @@ import configparser
 
 
 class ConfigParse:
-    
+
     def fetch_keys(self):
         config = configparser.ConfigParser()
         config.read('.awskeys.ini')

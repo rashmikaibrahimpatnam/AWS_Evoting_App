@@ -12,7 +12,7 @@ from .voting_management import adminElection, elections
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
     app.secret_key = os.urandom(24)
-    create_config.CreateConfigParse().add_keys()
+    # create_config.CreateConfigParse().add_keys()
     app.register_blueprint(register.bp, url_prefix="/register")
     app.register_blueprint(login.bp, url_prefix="/login")
     app.register_blueprint(voterHome.bp, url_prefix="/voterHome")
