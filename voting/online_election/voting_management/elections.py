@@ -159,6 +159,8 @@ def find_winner():
     headers = {"Content-type": "application/json", "x-api-key": secret, "authorizationToken": secret}
     params = {"election_id": election_id}
     response = requests.get(get_submitted_votes_url, params=params, headers=headers)
+    if "Unauthorized" in response.text or "Forbidden" in response.text:
+        return redirect(url_for("error.get_unauthorized_error_page"))
     election_details = json.loads(response.text, object_hook=json_decoder)
     results_dictionary = {}
     for item in election_details:
