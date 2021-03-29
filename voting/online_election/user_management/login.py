@@ -10,6 +10,7 @@ from werkzeug.utils import redirect
 
 from online_election.access_secmanager import SecretManager
 from online_election.user_management.User import UserDetails
+from online_election.user_management.send_sms import SendSMS
 
 bp = Blueprint('login', __name__, template_folder="templates", static_folder="static")
 
@@ -46,7 +47,6 @@ def submit_data():
         # fetch data from dynamo for the user, if does not exist, redirect to register page fetch data from dynamo
         # for the user, if exists, check for the verified field, if verified redirect to home page
         secret = fetch_secret_key()
-        pdb.set_trace()
         session['email_id'] = user.email
         if str(user.email).lower() == "noreply.horizon.group1@gmail.com":
             session["role"] = "ADMIN"
@@ -78,6 +78,7 @@ def submit_data():
                 return render_template('login.html')
             elif "email_id" in response.text:
                 if session["role"] == "USER":
+                    SendSMS().access_SNS()
                     return redirect(url_for("voterHome.get_voter_home"))
                 else:
                     return redirect(url_for("adminHome.get_admin_home"))
