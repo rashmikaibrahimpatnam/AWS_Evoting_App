@@ -9,6 +9,8 @@ from werkzeug.utils import redirect
 
 from online_election.voting_management.Candidate import Candidate
 from online_election.voting_management.Election import Election
+from online_election.access_secmanager import SecretManager
+
 
 bp = Blueprint('adminElection', __name__, template_folder="templates", static_folder="static")
 
@@ -17,15 +19,24 @@ def json_decoder(user_dictionary):
     return namedtuple('X', user_dictionary.keys())(*user_dictionary.values())
 
 
+def fetch_secret_key():
+    secret_name = "electionmgmt/electionmgmtkey"
+    key_name = "ElectionMgmtAPIKey"
+    secret = SecretManager().get_secret(secret_name, key_name)
+    return secret
+
 @bp.route("/viewElections", methods=["GET"])
 def view_elections():
     if "email_id" not in session:
         return render_template("admin_election_list.html")
+    secret = fetch_secret_key()
     get_elections_url = "https://s9uztjegil.execute-api.us-east-1.amazonaws.com/test/votingmanagement"
-    headers = {"Content-type": "application/json"}
+    headers = {"Content-type": "application/json", "x-api-key": secret, "authorizationToken": secret}
     params = {"email_id": session["email_id"]}
 
     response = requests.get(get_elections_url, params=params, headers=headers)
+    if "Unauthorized" in response.text or "Forbidden" in response.text:
+        return redirect(url_for("error.get_unauthorized_error_page"))
     election_list_response = json.loads(response.text, object_hook=json_decoder)
     elections = []
     for election_item in election_list_response.elections:
@@ -98,11 +109,14 @@ def submit_data():
     election = Election(election_id, election_type, election_text, election_title, candidate_list,
                         election_start_date, election_end_date, "N")
     print(str(election))
-
+    secret = fetch_secret_key()
     create_election_url = "https://s9uztjegil.execute-api.us-east-1.amazonaws.com/test/electionmanagement"
+    headers = {"Content-type": "application/json", "x-api-key": secret, "authorizationToken": secret}
     serialized_election = json.dumps(election, default=lambda o: o.__dict__)
     print(serialized_election)
-    response = requests.post(create_election_url, data=serialized_election)
+    response = requests.post(create_election_url, data=serialized_election,headers=headers)
+    if "Unauthorized" in response.text or "Forbidden" in response.text:
+        return redirect(url_for("error.get_unauthorized_error_page"))
     print(response.text)
     session["message"] = "Successfully created the election!"
     return redirect(url_for("adminHome.get_admin_home"))
@@ -113,8 +127,12 @@ def publish_election(election_id):
     if "email_id" not in session:
         return render_template("delete_election.html")
     print(election_id)
+    secret = fetch_secret_key()
     publish_election_url = "https://s9uztjegil.execute-api.us-east-1.amazonaws.com/test/resultsmanagement"
-    response = requests.post(publish_election_url, json={"election_id": election_id})
+    headers = {"Content-type": "application/json", "x-api-key": secret, "authorizationToken": secret}
+    response = requests.post(publish_election_url, json={"election_id": election_id},headers=headers)
+    if "Unauthorized" in response.text or "Forbidden" in response.text:
+        return redirect(url_for("error.get_unauthorized_error_page"))
     print(response.text)
     session["message"] = "Successfully published the election!"
     # sns mail must be sent
