@@ -3,8 +3,7 @@ from collections import namedtuple
 from datetime import date
 
 import requests
-from flask import Blueprint, session, render_template, request
-
+from flask import Blueprint, session, render_template, request, jsonify
 from online_election.voting_management.Election import Election
 
 bp = Blueprint('elections', __name__, template_folder="templates", static_folder="static")
@@ -24,6 +23,7 @@ def get_ongoing_elections():
 
     response = requests.get(get_elections_url, params=params, headers=headers)
     election_list_response = json.loads(response.text, object_hook=json_decoder)
+    print(election_list_response)
     submitted_elections = election_list_response.submittedElections
     elections = []
     for election_item in election_list_response.elections:
@@ -63,6 +63,7 @@ def get_submitted_elections():
 
     response = requests.get(get_elections_url, params=params, headers=headers)
     election_list_response = json.loads(response.text, object_hook=json_decoder)
+    print(election_list_response)
     submitted_elections = election_list_response.submittedElections
     elections = []
     for election_item in election_list_response.elections:
@@ -126,3 +127,17 @@ def cast_vote():
     session["message"] = "Successfully created the election!"
     # sns mail must be sent
     return render_template("voter_home.html")
+
+
+@bp.route('/findWinner', methods=['GET'])
+def find_winner():
+    if "email_id" not in session:
+        render_template("submitted_election_list.html")
+    election_id = request.args.get('election_id')
+    print(election_id)
+    get_submitted_votes_url = "https://s9uztjegil.execute-api.us-east-1.amazonaws.com/test/resultsmanagement"
+    headers = {"Content-type": "application/json"}
+    params = {"election_id": election_id}
+    response = requests.get(get_submitted_votes_url, params=params, headers=headers)
+    print(response.text)
+    return jsonify({'var1': 1, 'var2': 2, 'var3': 3})
