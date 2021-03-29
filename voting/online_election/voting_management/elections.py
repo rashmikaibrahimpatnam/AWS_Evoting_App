@@ -160,4 +160,30 @@ def find_winner():
     params = {"election_id": election_id}
     response = requests.get(get_submitted_votes_url, params=params, headers=headers)
     election_details = json.loads(response.text, object_hook=json_decoder)
-    return jsonify({'var1': 1, 'var2': 2, 'var3': 3})
+    results_dictionary = {}
+    for item in election_details:
+        if item.candidate_voted in results_dictionary:
+            results_dictionary[item.candidate_voted] += 1
+        else:
+            results_dictionary[item.candidate_voted] = 1
+
+    max_value = 0
+    for key in results_dictionary:
+        if results_dictionary[key] > max_value:
+            max_value = results_dictionary[key]
+
+    winning_candidate = []
+    for key in results_dictionary:
+        if results_dictionary[key] == max_value:
+            winning_candidate.append(key)
+
+    tie = False
+    empty = False
+    if len(winning_candidate) > 1:
+        tie = True
+        empty = False
+
+    if len(winning_candidate) == 0:
+        empty = True
+
+    return jsonify({'winner': winning_candidate, 'tie': tie, 'empty': empty})

@@ -22,20 +22,64 @@
         background-color: #b71c1c;
         color: white;
     }
-
-
-
-
-
-
-
-
-
+    .loader {
+        background:grey;
+        opacity:0.8;
+        cursor:not-allowed;
+        position:absolute;
+        top:0;
+        left:0;
+        height:100%;
+        width:100%;
+    }
 
 
     </style>
 </head>
 <body class="electionBg">
+<div class="loader center-align" style="display:none">
+       <div class="preloader-wrapper big active" style="top:45%">
+      <div class="spinner-layer spinner-blue">
+        <div class="circle-clipper left">
+          <div class="circle"></div>
+        </div><div class="gap-patch">
+          <div class="circle"></div>
+        </div><div class="circle-clipper right">
+          <div class="circle"></div>
+        </div>
+      </div>
+
+      <div class="spinner-layer spinner-red">
+        <div class="circle-clipper left">
+          <div class="circle"></div>
+        </div><div class="gap-patch">
+          <div class="circle"></div>
+        </div><div class="circle-clipper right">
+          <div class="circle"></div>
+        </div>
+      </div>
+
+      <div class="spinner-layer spinner-yellow">
+        <div class="circle-clipper left">
+          <div class="circle"></div>
+        </div><div class="gap-patch">
+          <div class="circle"></div>
+        </div><div class="circle-clipper right">
+          <div class="circle"></div>
+        </div>
+      </div>
+
+      <div class="spinner-layer spinner-green">
+        <div class="circle-clipper left">
+          <div class="circle"></div>
+        </div><div class="gap-patch">
+          <div class="circle"></div>
+        </div><div class="circle-clipper right">
+          <div class="circle"></div>
+        </div>
+      </div>
+    </div>
+</div>
 <div>
     <div class="row"></div>
     {% block content %}
@@ -129,10 +173,13 @@
     {% endblock content %}
 </div>
 <div id="modal1" class="modal">
-    <div class="modal-content">
-        <h4 id="resultsHeader">Results for Election</h4>
-        <p class="center-align">The winner of this election is: </p>
-        <p id="winner" style="font-weight:bold"></p>
+    <div class="container modal-content center-align">
+        <div class="row">
+            <h3 id="resultsHeader">Results for Election</h3>
+        </div>
+        <div class="row">The winner of this election is</div>
+        <div class="row" id="winner" class="center-align" style="font-weight:bold;font-size:xxx-large">
+        </div>
     </div>
     <div class="modal-footer">
         <a href="#!" class="btn waves-effect waves-light red darken-1 modal-close">Close</a>
@@ -141,14 +188,35 @@
 </body>
 <script>
     function findResults(id){
+       $(".loader").css("display","block");
        $.getJSON({
        url: "/elections/findWinner",
        data: { election_id: id },
        success: function(data){
+                    if(data.empty){
+                       $("#winner").html("No candidates have been voted for. We will be using other ways to select a candidate!");
+                    }
+                    else{
+                        if(data.tie){
+                            var candidate = "";
+                            var length = data.winner.length;
+                            for (var i=0; i<length;i++){
+                                candidate = candidate + "\n" + data.winner[i];
+                            }
+                            $("#winner").html("There is a tie among the candidates " + candidate);
+                        }
+                        else {
+                            $("#winner").html(data.winner[0]);
+                        }
+                    }
+                    $(".loader").css("display","none");
                     $('.modal').modal();
                     $('#modal1').modal('open');
                 }
        });
     }
+
+
+
 </script>
 </html>

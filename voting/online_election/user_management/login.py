@@ -92,4 +92,4 @@ def logout():
     # remove the email from the session if it is present 
     session.pop('email_id', None)
     session.pop("role", None)
-    return render_template("login.html")
+    return redirect(url_for("login.login"))
