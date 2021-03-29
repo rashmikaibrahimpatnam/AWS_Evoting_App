@@ -1,7 +1,6 @@
 import os
 
 from flask import Flask
-from flask_material import Material
 
 from . import create_config
 from . import error
