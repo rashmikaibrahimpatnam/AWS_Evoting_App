@@ -1,13 +1,13 @@
 import configparser
 
 
-class CreateConfigParse():
+class CreateConfigParse:
 
     def add_keys(self):
         config = configparser.ConfigParser()
-        config['AWSEducateKeys'] = {'access_key_id': 'ASIAZE7J44S6VDG5XAYC',
-                                    'secret_access_key': 'vzjYoHy3h+btbWnd54HjcCQYEhjUxrSvYrPJ5KNP',
-                                    'session_token': 'FwoGZXIvYXdzEAMaDHwHYdLA4pIGQ9l1jSK/AdiNUrf4vm12LT233oBSYqYdhfTaYrzZaFCL1uwN5I9rOqLpk9qeTN6npRb7HkdgNZbzereeLsG2yjgBQdLBeeR6ARq+JhFe4QPWU2Ekha4kDCyzKDRQGdhfXOVG3ZB7Vr1gzUCKrhRsc7rV8gRDmnnQ0OEstYJxPTSE15Mhg3U1OPwNheqiUTQpAdU5+rvSAWr/f21z0jz//9EkYVLqAjV/fd1K4cDBb5QeQqCewxieK6KyNv8/YFq/Iuoz2bdfKLHF/4IGMi1+F1ukaSOYzH0sbU2/akm2P/8L1nONRy17EZpuhJ/PafE+/ZorX3SIBCdDmPk=',
+        config['AWSEducateKeys'] = {'access_key_id': 'ASIAZE7J44S6QGVGVGNY',
+                                    'secret_access_key': '6YP/15UG6lIma/JuZg79ugYZF36OmPegjdW9ouoe',
+                                    'session_token': 'FwoGZXIvYXdzECgaDIpTYHW134yZ69A0pSK/Acd8H282zDunrzPUZLSNgg+/dxgZFgAdksRYtaQSPZ3xwymgbqwW1k3UwVcS9aEruEvZ+mfGhaPYjTkd7bUCkATjJWvOhAuyF5j7+IQ9Gcr7hIQ9ObDKL9Km+nh3QAt5OkwVhNzd81O9QZNE2050eUGX7zFYy1rIJUE8afRwc0aG3igUny4zkmbZ9wblHiVzWNGkN0gaW3foe//GlUQdH5+FzQOQOwBcqUo81cam2Dku4mDL58O8h7XvqcsbIyY5KN/Lh4MGMi3qpbyJ6IiAm9qZqqhgnaenIWuRG6UDY3GYOQ6fX44uFLP7Yn1qh/JKvH0xN3s=',
                                     'region_name': 'us-east-1'
                                     }
         with open('.awskeys.ini', 'w') as configfile:

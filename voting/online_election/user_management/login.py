@@ -1,16 +1,14 @@
 import hashlib
 import json
 from collections import namedtuple
-import pdb
+
 import requests
 from flask import (
     Blueprint, render_template, request, flash, session, url_for
 )
-from werkzeug.utils import redirect
-
 from online_election.access_secmanager import SecretManager
 from online_election.user_management.User import UserDetails
-from online_election.user_management.send_sms import SendSMS
+from werkzeug.utils import redirect
 
 bp = Blueprint('login', __name__, template_folder="templates", static_folder="static")
 
@@ -57,6 +55,7 @@ def submit_data():
         params = {"email_id": user.email}
 
         response = requests.get(get_user_url, params=params, headers=headers)
+        print(response.text)
         if "Unauthorized" in response.text or "Forbidden" in response.text:
             return redirect(url_for("error.get_unauthorized_error_page"))
         user_details = json.loads(response.text, object_hook=json_decoder)
@@ -78,7 +77,6 @@ def submit_data():
                 return render_template('login.html')
             elif "email_id" in response.text:
                 if session["role"] == "USER":
-                    SendSMS().access_SNS()
                     return redirect(url_for("voterHome.get_voter_home"))
                 else:
                     return redirect(url_for("adminHome.get_admin_home"))

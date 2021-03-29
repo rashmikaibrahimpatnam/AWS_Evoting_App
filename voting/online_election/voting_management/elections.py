@@ -3,10 +3,10 @@ from collections import namedtuple
 from datetime import date
 
 import requests
-from flask import Blueprint, session, render_template, request
-
+from flask import Blueprint, session, render_template, request, jsonify, url_for
 from online_election.access_secmanager import SecretManager
 from online_election.voting_management.Election import Election
+from werkzeug.utils import redirect
 
 bp = Blueprint('elections', __name__, template_folder="templates", static_folder="static")
 
@@ -14,11 +14,13 @@ bp = Blueprint('elections', __name__, template_folder="templates", static_folder
 def json_decoder(user_dictionary):
     return namedtuple('X', user_dictionary.keys())(*user_dictionary.values())
 
+
 def fetch_secret_key():
     secret_name = "electionmgmt/electionmgmtkey"
     key_name = "ElectionMgmtAPIKey"
     secret = SecretManager().get_secret(secret_name, key_name)
     return secret
+
 
 @bp.route("/ongoing", methods=["GET"])
 def get_ongoing_elections():
@@ -26,13 +28,14 @@ def get_ongoing_elections():
         return render_template("ongoing_election_list.html")
     secret = fetch_secret_key()
     get_elections_url = "https://s9uztjegil.execute-api.us-east-1.amazonaws.com/test/votingmanagement"
-    headers = {"Content-type": "application/json","x-api-key": secret, "authorizationToken": secret}
+    headers = {"Content-type": "application/json", "x-api-key": secret, "authorizationToken": secret}
     params = {"email_id": session["email_id"]}
 
     response = requests.get(get_elections_url, params=params, headers=headers)
     if "Unauthorized" in response.text or "Forbidden" in response.text:
         return redirect(url_for("error.get_unauthorized_error_page"))
     election_list_response = json.loads(response.text, object_hook=json_decoder)
+    print(election_list_response)
     submitted_elections = election_list_response.submittedElections
     elections = []
     for election_item in election_list_response.elections:
@@ -57,6 +60,7 @@ def get_ongoing_elections():
 
     date_formatted = date.today().strftime("%d/%m/%Y")
     elections = [x for x in elections if x.start_date <= date_formatted <= x.end_date]
+    elections = [x for x in elections if x.results_published == "N"]
 
     return render_template("ongoing_election_list.html", election_list=elections, len=len(elections))
 
@@ -67,13 +71,14 @@ def get_submitted_elections():
         return render_template("submitted_election_list.html")
     secret = fetch_secret_key()
     get_elections_url = "https://s9uztjegil.execute-api.us-east-1.amazonaws.com/test/votingmanagement"
-    headers = {"Content-type": "application/json","x-api-key": secret, "authorizationToken": secret}
+    headers = {"Content-type": "application/json", "x-api-key": secret, "authorizationToken": secret}
     params = {"email_id": session["email_id"]}
 
     response = requests.get(get_elections_url, params=params, headers=headers)
     if "Unauthorized" in response.text or "Forbidden" in response.text:
         return redirect(url_for("error.get_unauthorized_error_page"))
     election_list_response = json.loads(response.text, object_hook=json_decoder)
+    print(election_list_response)
     submitted_elections = election_list_response.submittedElections
     elections = []
     for election_item in election_list_response.elections:
@@ -106,7 +111,7 @@ def get_cast_vote_page(election_id):
         return render_template("create_election.html")
     get_election_by_id_url = "https://s9uztjegil.execute-api.us-east-1.amazonaws.com/test/electionmanagement"
     secret = fetch_secret_key()
-    headers = {"Content-type": "application/json","x-api-key": secret, "authorizationToken": secret}
+    headers = {"Content-type": "application/json", "x-api-key": secret, "authorizationToken": secret}
     params = {"election_id": election_id}
     response = requests.get(get_election_by_id_url, params=params, headers=headers)
     if "Unauthorized" in response.text or "Forbidden" in response.text:
@@ -133,12 +138,26 @@ def cast_vote():
         "vote_date": date.today().strftime("%d/%m/%Y"),
         "candidate_voted": option[0]
     }
-    headers = {"Content-type": "application/json","x-api-key": secret, "authorizationToken": secret}
+    headers = {"Content-type": "application/json", "x-api-key": secret, "authorizationToken": secret}
 
-    response = requests.post(cast_your_vote_url, json=cast_vote_params,headers=headers)
+    response = requests.post(cast_your_vote_url, json=cast_vote_params, headers=headers)
     if "Unauthorized" in response.text or "Forbidden" in response.text:
         return redirect(url_for("error.get_unauthorized_error_page"))
     details = json.loads(response.text)
     session["message"] = "Successfully created the election!"
     # sns mail must be sent
     return render_template("voter_home.html")
+
+
+@bp.route('/findWinner', methods=['GET'])
+def find_winner():
+    if "email_id" not in session:
+        render_template("submitted_election_list.html")
+    election_id = request.args.get('election_id')
+    get_submitted_votes_url = "https://s9uztjegil.execute-api.us-east-1.amazonaws.com/test/resultsmanagement"
+    secret = fetch_secret_key()
+    headers = {"Content-type": "application/json", "x-api-key": secret, "authorizationToken": secret}
+    params = {"election_id": election_id}
+    response = requests.get(get_submitted_votes_url, params=params, headers=headers)
+    election_details = json.loads(response.text, object_hook=json_decoder)
+    return jsonify({'var1': 1, 'var2': 2, 'var3': 3})
