@@ -124,7 +124,7 @@ def submit_data():
 @bp.route('/publishElection/<string:election_id>', methods=['GET'])
 def publish_election(election_id):
     if "email_id" not in session:
-        return render_template("delete_election.html")
+        return redirect(url_for("adminElection.view_elections"))
     print(election_id)
     secret = fetch_secret_key()
     publish_election_url = "https://s9uztjegil.execute-api.us-east-1.amazonaws.com/test/resultsmanagement"
