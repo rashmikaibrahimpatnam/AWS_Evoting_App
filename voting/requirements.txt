@@ -11,3 +11,5 @@ werkzeug
 boto3
 
 botocore
+
+six

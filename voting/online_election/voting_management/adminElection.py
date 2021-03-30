@@ -1,4 +1,5 @@
 import json
+import time
 import uuid
 from collections import namedtuple
 from datetime import date
@@ -73,6 +74,8 @@ def submit_data():
     election_end_date = (request.form.get("end_date", ""))
     election_candidate_name = request.form.getlist("candidate")
     election_candidate_party = request.form.getlist("candidate_party")
+    newdate1 = time.strptime(election_start_date, "%d/%m/%Y")
+    newdate2 = time.strptime(election_end_date, "%d/%m/%Y")
 
     if election_type == "":
         flash("Election type is required!!")
@@ -95,7 +98,7 @@ def submit_data():
     if len(election_candidate_name) <= 1 or len(election_candidate_party) <= 1:
         flash("Two or more candidates must be included in the election in order to cast a vote!")
         return render_template("create_election.html")
-    if election_start_date >= election_end_date:
+    if newdate1 >= newdate2:
         flash("The start date must be less than the end date!!")
         return render_template("create_election.html")
 

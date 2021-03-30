@@ -2,9 +2,9 @@ import os
 
 from flask import Flask
 
-from . import create_config
-from . import error
-from . import index
+from online_election import create_config
+from online_election import error
+from online_election import index
 from .user_management import register, login, voterHome, adminHome
 from .voting_management import adminElection, elections
 
