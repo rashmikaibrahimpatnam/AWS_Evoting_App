@@ -24,6 +24,7 @@
         cursor:pointer;
     }
 
+
     </style>
 </head>
 <body class="electionBg">
@@ -83,8 +84,7 @@
                                 </ul>
                             </td>
                             <td>
-                                {%if election_list[i].results_published == "N"
-                                and current_date > election_list[i].end_date %}
+                                {%if election_list[i].results_published == "N" and election_list[i].can_publish == "Y" %}
                                 <a class="btn btn-small waves-effect waves-light green darken-1"
                                    href="/adminElection/publishElection/{{election_list[i].election_id}}"
                                    onClick="return confirm('Are you sure you want to publish the election results? Results published once cannot be taken back!');">

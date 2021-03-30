@@ -1,4 +1,5 @@
 import json
+import time
 from collections import namedtuple
 from datetime import date
 
@@ -60,7 +61,9 @@ def get_ongoing_elections():
     # filter out the elections that have not yet started or already over!
 
     date_formatted = date.today().strftime("%d/%m/%Y")
-    elections = [x for x in elections if x.start_date <= date_formatted <= x.end_date]
+    elections = [x for x in elections if
+                 time.strptime(x.start_date, "%d/%m/%Y") <= time.strptime(date_formatted, "%d/%m/%Y")
+                 <= time.strptime(x.end_date, "%d/%m/%Y")]
     elections = [x for x in elections if x.results_published == "N"]
 
     return render_template("ongoing_election_list.html", election_list=elections, len=len(elections))

@@ -41,20 +41,24 @@ def view_elections():
     election_list_response = json.loads(response.text, object_hook=json_decoder)
     elections = []
     for election_item in election_list_response.elections:
-        print(election_item.election_candidates)
+
+        can_publish = "N"
+        if time.strptime(date.today().strftime("%d/%m/%Y"), "%d/%m/%Y") > time.strptime(election_item.end_date,
+                                                                                        "%d/%m/%Y"):
+            can_publish = "Y"
+
         election = Election(election_item.election_id, election_item.election_type,
                             election_item.election_text,
                             election_item.election_title,
                             election_item.election_candidates,
                             election_item.start_date, election_item.end_date,
-                            election_item.results_published)
+                            election_item.results_published, can_publish)
         elections.append(election)
 
     if "message" in session:
         flash(session["message"])
         session.pop("message", None)
-    return render_template("admin_election_list.html", election_list=elections, len=len(elections)
-                           , current_date=date.today().strftime("%d/%m/%Y"))
+    return render_template("admin_election_list.html", election_list=elections, len=len(elections))
 
 
 @bp.route("/createElection", methods=["GET"])
