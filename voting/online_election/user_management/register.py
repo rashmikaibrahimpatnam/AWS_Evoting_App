@@ -9,6 +9,7 @@ from werkzeug.utils import redirect
 from online_election.access_secmanager import SecretManager
 from online_election.user_management.User import UserDetails
 from online_election.user_management.emailService import send_email
+import pdb
 
 bp = Blueprint('register', __name__, template_folder="templates", static_folder="static")
 
@@ -108,6 +109,14 @@ def verify_email_address():
         if "Unauthorized" in response.text or "Forbidden" in response.text:
             return redirect(url_for("error.get_unauthorized_error_page"))
         print(response.text)
+        send_sms_params = {
+        "email_id" : session["email_id"]
+        }
+        send_email_url = "https://hqk1etk2nl.execute-api.us-east-1.amazonaws.com/test/snsmanagement"
+        pdb.set_trace()
+        response = requests.post(send_email_url, json=send_sms_params, headers=headers)
+        if "Unauthorized" in response.text or "Forbidden" in response.text:
+            return redirect(url_for("error.get_unauthorized_error_page"))
         session.pop("email_id", None)
         session.pop("otp", None)
         return render_template("login.html")

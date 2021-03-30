@@ -9,6 +9,7 @@ from flask import (
 from online_election.access_secmanager import SecretManager
 from online_election.user_management.User import UserDetails
 from werkzeug.utils import redirect
+import pdb
 
 bp = Blueprint('login', __name__, template_folder="templates", static_folder="static")
 
