@@ -1,14 +1,15 @@
 import json
+import time
 from collections import namedtuple
 from datetime import date
 
 import requests
 from flask import Blueprint, session, render_template, request, jsonify, url_for
+from werkzeug.utils import redirect
+
 from online_election.access_secmanager import SecretManager
 from online_election.voting_management.Election import Election
-from werkzeug.utils import redirect
 import pdb
-
 bp = Blueprint('elections', __name__, template_folder="templates", static_folder="static")
 
 
@@ -60,7 +61,9 @@ def get_ongoing_elections():
     # filter out the elections that have not yet started or already over!
 
     date_formatted = date.today().strftime("%d/%m/%Y")
-    elections = [x for x in elections if x.start_date <= date_formatted <= x.end_date]
+    elections = [x for x in elections if
+                 time.strptime(x.start_date, "%d/%m/%Y") <= time.strptime(date_formatted, "%d/%m/%Y")
+                 <= time.strptime(x.end_date, "%d/%m/%Y")]
     elections = [x for x in elections if x.results_published == "N"]
 
     return render_template("ongoing_election_list.html", election_list=elections, len=len(elections))

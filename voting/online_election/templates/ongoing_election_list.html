@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static',filename='elections.css')}}">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <link href="{{ url_for('static',filename='elections.css')}}" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
     <title>Ongoing election list</title>
@@ -25,6 +25,7 @@
 
 
 
+
     </style>
 </head>
 <body class="electionBg">
@@ -35,7 +36,7 @@
     <div class="row" style="background: linear-gradient(30deg,#fff 40%,#e8f4f8 50%);">
         <div class="row"></div>
         <div class="col s12 card-action right-align">
-            <a href="/login/logout" class="btn red">Logout</a>
+            <a class="btn red" href="/login/logout">Logout</a>
         </div>
         <div class="row center-align">
             <div class="col s8 offset-s2">
@@ -66,8 +67,8 @@
                             <td>{{election_list[i].start_date}}</td>
                             <td>{{election_list[i].end_date}}</td>
                             <td>
-                                <a href="/elections/castVote/{{election_list[i].election_id}}"
-                                   class="indigo-text darken-1"
+                                <a class="indigo-text darken-1"
+                                   href="/elections/castVote/{{election_list[i].election_id}}"
                                    style="text-decoration:underline;">
                                     Cast your vote!
                                 </a>
@@ -100,7 +101,7 @@
             You are not authorized to use this system! Please login to continue!!
         </div>
         <div class="row center-align">
-            <a href="/login/login" class="indigo-text darken-1"
+            <a class="indigo-text darken-1" href="/login/login"
                style="text-decoration:underline;">
                 Login here
             </a>

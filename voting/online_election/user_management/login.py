@@ -6,10 +6,10 @@ import requests
 from flask import (
     Blueprint, render_template, request, flash, session, url_for
 )
+from werkzeug.utils import redirect
+
 from online_election.access_secmanager import SecretManager
 from online_election.user_management.User import UserDetails
-from werkzeug.utils import redirect
-import pdb
 
 bp = Blueprint('login', __name__, template_folder="templates", static_folder="static")
 
@@ -93,4 +93,4 @@ def logout():
     # remove the email from the session if it is present 
     session.pop('email_id', None)
     session.pop("role", None)
-    return redirect(url_for("login.login"))
+    return redirect(url_for("login.get_login_page"))

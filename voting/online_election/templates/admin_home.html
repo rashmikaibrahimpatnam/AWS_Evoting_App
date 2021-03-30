@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Admin Home</title>
-    <link rel="stylesheet" href="{{ url_for('static',filename='login.css')}}">
+    <link href="{{ url_for('static',filename='login.css')}}" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
     <style>
@@ -39,6 +39,9 @@
         }
 
 
+
+
+
     </style>
 </head>
 
@@ -50,7 +53,7 @@
     <div class="row" style="background: linear-gradient(30deg,#fff 40%,#e8f4f8 50%);">
         <div class="row"></div>
         <div class="col s12 card-action right-align">
-            <a href="/login/logout" class="btn red">Logout</a>
+            <a class="btn red" href="/login/logout">Logout</a>
         </div>
         <div class="row">
             <div class="row">
@@ -74,11 +77,11 @@
                 <br/>
                 <div>
                     <div class="row center-align">
-                        <a href="/adminElection/viewElections" class="waves-effect waves-light btn-small blue"><i
+                        <a class="waves-effect waves-light btn-small blue" href="/adminElection/viewElections"><i
                                 class="material-icons left">star_border</i>View All Elections</a>
                     </div>
                     <div class="row center-align">
-                        <a href="/adminElection/createElection" class="waves-effect waves-light btn-small green"><i
+                        <a class="waves-effect waves-light btn-small green" href="/adminElection/createElection"><i
                                 class="material-icons left">star_border</i>Create Election</a>
                     </div>
                 </div>
@@ -91,7 +94,7 @@
             You are not authorized to use this system! Please login to continue!!
         </div>
         <div class="row center-align">
-            <a href="/login/login" class="indigo-text darken-1"
+            <a class="indigo-text darken-1" href="/login/login"
                style="text-decoration:underline;">
                 Login here
             </a>

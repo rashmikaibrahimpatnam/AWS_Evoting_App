@@ -1,10 +1,10 @@
 {% block content %}
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static',filename='registration.css')}}">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <link href="{{ url_for('static',filename='registration.css')}}" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
     <title>User Registration</title>
@@ -14,6 +14,7 @@
         background-color: #b71c1c;
         color: white;
     }
+
     </style>
 </head>
 <body class="registrationBg">
@@ -31,18 +32,18 @@
             </div>
 
             <div class="row">
-                <form class="col s12" action="/register/register" method="POST">
+                <form action="/register/register" class="col s12" method="POST">
                     <div class="row">
                         <div class="input-field col s6">
                             <i class="material-icons prefix">account_circle</i>
-                            <input required name="first_name" id="first_name" type="text"
-                                   class="validate">
+                            <input class="validate" id="first_name" name="first_name" required
+                                   type="text">
                             <label for="first_name">First Name</label>
                             <span class="helper-text" data-error="Enter your first name!"></span>
                         </div>
                         <div class="input-field col s6">
                             <i class="material-icons prefix">account_circle</i>
-                            <input required id="last_name" name="last_name" type="text" class="validate">
+                            <input class="validate" id="last_name" name="last_name" required type="text">
                             <label for="last_name">Last Name</label>
                             <span class="helper-text" data-error="Enter your last name!"></span>
                         </div>
@@ -50,15 +51,15 @@
                     <div class="row">
                         <div class="input-field col s6">
                             <i class="material-icons prefix">lock</i>
-                            <input id="password" name="password" minlength="8" required type="password"
-                                   class="validate">
+                            <input class="validate" id="password" minlength="8" name="password" required
+                                   type="password">
                             <label for="password">Password</label>
                             <span class="helper-text" data-error="Password must be 8 or more characters long!"></span>
                         </div>
                         <div class="input-field col s6">
                             <i class="material-icons prefix">lock</i>
-                            <input id="confirm_password" required minlength="8" name="confirm_password" type="password"
-                                   class="validate">
+                            <input class="validate" id="confirm_password" minlength="8" name="confirm_password" required
+                                   type="password">
                             <label for="confirm_password">Confirm Password</label>
                             <span class="helper-text" data-error="Password not matching"></span>
                         </div>
@@ -66,22 +67,22 @@
                     <div class="row">
                         <div class="input-field col s6">
                             <i class="material-icons prefix">call</i>
-                            <input id="phone" required name="phone" type="text" minlength="10" maxlength="10"
-                                   class="validate">
+                            <input class="validate" id="phone" maxlength="10" minlength="10" name="phone" required
+                                   type="text">
                             <label for="phone">Phone Number</label>
                             <span class="helper-text" data-error="Enter your phone number"></span>
                         </div>
                         <div class="input-field col s6">
                             <i class="material-icons prefix">email</i>
-                            <input id="email" type="email" name="email" required class="validate">
+                            <input class="validate" id="email" name="email" required type="email">
                             <label for="email">Email</label>
                             <span class="helper-text" data-error="Enter your email address!"></span>
                         </div>
                     </div>
                     <div class="row">
                         <div>
-                            <button class="btn waves-effect waves-light blue darken-1 enableOnInput" type="submit"
-                                    name="action">
+                            <button class="btn waves-effect waves-light blue darken-1 enableOnInput" name="action"
+                                    type="submit">
                                 Register
                                 <i class="material-icons right">send</i>
                             </button>
@@ -91,7 +92,7 @@
                 <div class="row">
                     <div class="center-align">
                         Already a member?
-                        <a href="/login/login" class="indigo-text darken-1"
+                        <a class="indigo-text darken-1" href="/login/login"
                            style="text-decoration:underline;">
                             Login here
                         </a>
@@ -123,6 +124,7 @@ $("#confirm_password").on("keyup", function (e) {
         $('.enableOnInput').prop('disabled', false);
     }
 });
+
 </script>
 {% endblock %}
 
