@@ -17,9 +17,7 @@ def json_decoder(user_dictionary):
     return namedtuple('X', user_dictionary.keys())(*user_dictionary.values())
 
 
-def fetch_secret_key():
-    secret_name = "usermgmt/usrmgmtkey"
-    key_name = "UsermgmtAPIKey"
+def fetch_secret_key(secret_name,key_name):
     secret = SecretManager().get_secret(secret_name, key_name)
     return secret
 
@@ -50,8 +48,9 @@ def submit_data():
         # 2. If not existing, insert to dynamodb and also encrypt the password
         # 3. Once inserted, send an email with a verification code
         # 4. Render a template which verifies that verification code
-
-        secret = fetch_secret_key()
+        secret_name = "usermgmt/usrmgmtkey"
+        key_name = "UsermgmtAPIKey"
+        secret = fetch_secret_key(secret_name,key_name)
         get_user_url = "https://as5r1zw6c8.execute-api.us-east-1.amazonaws.com/test/usermanagement"
         add_user_url = "https://as5r1zw6c8.execute-api.us-east-1.amazonaws.com/test/usermanagement"
 
@@ -90,7 +89,9 @@ def submit_data():
 
 @bp.route("/verify_email_address", methods=['POST'])
 def verify_email_address():
-    secret = fetch_secret_key()
+    secret_name = "usermgmt/usrmgmtkey"
+    key_name = "UsermgmtAPIKey"
+    secret = fetch_secret_key(secret_name,key_name)
     entered_code = str(request.form.get("code", ""))
     if session["otp"] != entered_code:
         flash("The entered code is incorrect!")
@@ -108,6 +109,17 @@ def verify_email_address():
         if "Unauthorized" in response.text or "Forbidden" in response.text:
             return redirect(url_for("error.get_unauthorized_error_page"))
         print(response.text)
+        secret_name = "snsmgmt/snsmgmtkey"
+        key_name = "SnsMgmtAPIKey"
+        secret = fetch_secret_key(secret_name,key_name)
+        headers = {"Content-type": "application/json", "x-api-key": secret, "authorizationToken": secret}
+        send_email_params = {
+        "email_id" : session["email_id"]
+        }
+        send_email_url = "https://hqk1etk2nl.execute-api.us-east-1.amazonaws.com/test/snsmanagement"
+        response = requests.post(send_email_url, json=send_email_params, headers=headers)
+        if "Unauthorized" in response.text or "Forbidden" in response.text:
+            return redirect(url_for("error.get_unauthorized_error_page"))
         session.pop("email_id", None)
         session.pop("otp", None)
         return render_template("login.html")
