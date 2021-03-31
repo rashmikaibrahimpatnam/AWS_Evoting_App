@@ -9,11 +9,13 @@ from werkzeug.utils import redirect
 
 from online_election.access_secmanager import SecretManager
 from online_election.voting_management.Election import Election
+
 bp = Blueprint('elections', __name__, template_folder="templates", static_folder="static")
 
 
 def json_decoder(user_dictionary):
     return namedtuple('X', user_dictionary.keys())(*user_dictionary.values())
+
 
 @bp.route("/ongoing", methods=["GET"])
 def get_ongoing_elections():
@@ -68,7 +70,7 @@ def get_submitted_elections():
         return render_template("submitted_election_list.html")
     secret_name = "electionmgmt/electionmgmtkey"
     key_name = "ElectionMgmtAPIKey"
-    secret = SecretManager().get_secret(secret_name, key_name)    
+    secret = SecretManager().get_secret(secret_name, key_name)
     get_elections_url = "https://s9uztjegil.execute-api.us-east-1.amazonaws.com/test/votingmanagement"
     headers = {"Content-type": "application/json", "x-api-key": secret, "authorizationToken": secret}
     params = {"email_id": session["email_id"]}
@@ -111,7 +113,7 @@ def get_cast_vote_page(election_id):
     get_election_by_id_url = "https://s9uztjegil.execute-api.us-east-1.amazonaws.com/test/electionmanagement"
     secret_name = "electionmgmt/electionmgmtkey"
     key_name = "ElectionMgmtAPIKey"
-    secret = SecretManager().get_secret(secret_name, key_name)    
+    secret = SecretManager().get_secret(secret_name, key_name)
     headers = {"Content-type": "application/json", "x-api-key": secret, "authorizationToken": secret}
     params = {"election_id": election_id}
     response = requests.get(get_election_by_id_url, params=params, headers=headers)
@@ -152,15 +154,16 @@ def cast_vote():
     secret_name = "snsmgmt/snsmgmtkey"
     key_name = "SnsMgmtAPIKey"
     secret = SecretManager().get_secret(secret_name, key_name)
+    print(secret)
     publish_email_params = {
-        "email_id" : session["email_id"]
+        "email_id": session["email_id"]
     }
     headers = {"Content-type": "application/json", "x-api-key": secret, "authorizationToken": secret}
     publish_email_url = "https://hqk1etk2nl.execute-api.us-east-1.amazonaws.com/test/publishmessage"
     response = requests.post(publish_email_url, json=publish_email_params, headers=headers)
     if "Unauthorized" in response.text or "Forbidden" in response.text:
-        return redirect(url_for("error.get_unauthorized_error_page"))    
-    return render_template("voter_home.html")
+        return redirect(url_for("error.get_unauthorized_error_page"))
+    return redirect(url_for("voterHome.get_voter_home"))
 
 
 @bp.route('/findWinner', methods=['GET'])
@@ -171,7 +174,7 @@ def find_winner():
     get_submitted_votes_url = "https://s9uztjegil.execute-api.us-east-1.amazonaws.com/test/resultsmanagement"
     secret_name = "electionmgmt/electionmgmtkey"
     key_name = "ElectionMgmtAPIKey"
-    secret = SecretManager().get_secret(secret_name, key_name) 
+    secret = SecretManager().get_secret(secret_name, key_name)
     headers = {"Content-type": "application/json", "x-api-key": secret, "authorizationToken": secret}
     params = {"election_id": election_id}
     response = requests.get(get_submitted_votes_url, params=params, headers=headers)

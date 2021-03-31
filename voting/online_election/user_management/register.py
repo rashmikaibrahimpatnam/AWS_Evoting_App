@@ -17,7 +17,7 @@ def json_decoder(user_dictionary):
     return namedtuple('X', user_dictionary.keys())(*user_dictionary.values())
 
 
-def fetch_secret_key(secret_name,key_name):
+def fetch_secret_key(secret_name, key_name):
     secret = SecretManager().get_secret(secret_name, key_name)
     return secret
 
@@ -50,7 +50,7 @@ def submit_data():
         # 4. Render a template which verifies that verification code
         secret_name = "usermgmt/usrmgmtkey"
         key_name = "UsermgmtAPIKey"
-        secret = fetch_secret_key(secret_name,key_name)
+        secret = fetch_secret_key(secret_name, key_name)
         get_user_url = "https://as5r1zw6c8.execute-api.us-east-1.amazonaws.com/test/usermanagement"
         add_user_url = "https://as5r1zw6c8.execute-api.us-east-1.amazonaws.com/test/usermanagement"
 
@@ -91,7 +91,7 @@ def submit_data():
 def verify_email_address():
     secret_name = "usermgmt/usrmgmtkey"
     key_name = "UsermgmtAPIKey"
-    secret = fetch_secret_key(secret_name,key_name)
+    secret = fetch_secret_key(secret_name, key_name)
     entered_code = str(request.form.get("code", ""))
     if session["otp"] != entered_code:
         flash("The entered code is incorrect!")
@@ -111,15 +111,16 @@ def verify_email_address():
         print(response.text)
         secret_name = "snsmgmt/snsmgmtkey"
         key_name = "SnsMgmtAPIKey"
-        secret = fetch_secret_key(secret_name,key_name)
-        headers = {"Content-type": "application/json", "x-api-key": secret, "authorizationToken": secret}
+        secret1 = fetch_secret_key(secret_name, key_name)
+        headers = {"Content-type": "application/json", "x-api-key": secret1, "authorizationToken": secret1}
         send_email_params = {
-        "email_id" : session["email_id"]
+            "email_id": session["email_id"]
         }
         send_email_url = "https://hqk1etk2nl.execute-api.us-east-1.amazonaws.com/test/snsmanagement"
         response = requests.post(send_email_url, json=send_email_params, headers=headers)
+        print(response.text)
         if "Unauthorized" in response.text or "Forbidden" in response.text:
             return redirect(url_for("error.get_unauthorized_error_page"))
         session.pop("email_id", None)
         session.pop("otp", None)
-        return render_template("login.html")
+        return redirect(url_for("login.get_login_page"))
