@@ -143,4 +143,22 @@ def publish_election(election_id):
     print(response.text)
     session["message"] = "Successfully published the election!"
     # sns mail must be sent
+    send_mail_lst = []
+    resp = requests.get(publish_election_url, params={"election_id": election_id}, headers=headers)
+    for record in eval(resp.text):
+        send_mail_lst .append(record['voter_id'])
+    secret_name = "snsmgmt/snsmgmtkey"
+    key_name = "SnsMgmtAPIKey"
+    secret = SecretManager().get_secret(secret_name, key_name)
+    publish_email_params = {
+        "email_id" : send_mail_lst,
+        "message"  : "Results are out for the elections for which you have voted as a responsible citizen"
+    }
+    headers = {"Content-type": "application/json", "x-api-key": secret, "authorizationToken": secret}
+    publish_email_url = "https://hqk1etk2nl.execute-api.us-east-1.amazonaws.com/test/publishmessage"
+    response = requests.post(publish_email_url, json=publish_email_params, headers=headers)
+    if "Unauthorized" in response.text or "Forbidden" in response.text:
+        return redirect(url_for("error.get_unauthorized_error_page"))    
+
+
     return redirect(url_for("adminElection.view_elections"))

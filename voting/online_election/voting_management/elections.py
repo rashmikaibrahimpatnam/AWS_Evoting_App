@@ -9,6 +9,7 @@ from werkzeug.utils import redirect
 
 from online_election.access_secmanager import SecretManager
 from online_election.voting_management.Election import Election
+
 bp = Blueprint('elections', __name__, template_folder="templates", static_folder="static")
 
 
@@ -152,8 +153,11 @@ def cast_vote():
     secret_name = "snsmgmt/snsmgmtkey"
     key_name = "SnsMgmtAPIKey"
     secret = SecretManager().get_secret(secret_name, key_name)
+    email_list = []
+    email_list.append(session['email_id'])
     publish_email_params = {
-        "email_id" : session["email_id"]
+        "email_id" : email_list,
+        "message"  : "You have successfully casted your valuable vote. Please wait for the annoucement email for the results"
     }
     headers = {"Content-type": "application/json", "x-api-key": secret, "authorizationToken": secret}
     publish_email_url = "https://hqk1etk2nl.execute-api.us-east-1.amazonaws.com/test/publishmessage"
