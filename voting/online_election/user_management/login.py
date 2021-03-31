@@ -93,4 +93,5 @@ def logout():
     # remove the email from the session if it is present 
     session.pop('email_id', None)
     session.pop("role", None)
+    session.clear()
     return redirect(url_for("login.get_login_page"))
