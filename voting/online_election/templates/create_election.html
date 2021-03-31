@@ -132,6 +132,7 @@
 </div>
 </body>
 <script>
+var candidateCount = 0;
      $(document).ready(function() {
         $(".datepicker").datepicker({
             defaultDate: new Date(),
@@ -140,18 +141,21 @@
      });
 
     function showMoreOptions() {
+    candidateCount = candidateCount + 1;
+    candidateId = "candidate_" + candidateCount;
+    candidatePartyId = "candidateParty_" + candidateCount;
 		document.getElementById("addedCandidates").style.display = "block";
-		document.getElementById("addedCandidates").innerHTML += "<br /><div class='row'>"
-                + "<div class='input-field col s10'>"
+		document.getElementById("addedCandidates").innerHTML += "<div class='row'>"
+                +   "<div class='input-field col s10'>"
                 +   "<i class='material-icons prefix'>account_circle</i>"
-                +   "<input required name='candidate' type='text'>"
-                +   "<label for='candidate'>Enter the candidate name</label>"
+                +   "<input class='validate' id=" + candidateId + " required name='candidate' type='text'/>"
+                +   "<label for=" + candidateId + " >Enter the candidate name</label>"
                 +   "<span class='helper-text' data-error='Enter the candidate name!'></span></div></div>"
                 +   "<div class='row'>"
                 +   "<div class='input-field col s10'>"
                 +    "<i class='material-icons prefix'>flag</i>"
-                +    "<input required name='candidate_party' type='text'>"
-                +    "<label for='candidate_party'>Enter the candidate party</label>"
+                +    "<input class='validate' id=" + candidatePartyId + " required name='candidate_party' type='text'/>"
+                +    "<label for=" + candidatePartyId + " >Enter the candidate party</label>"
                 +    "<span class='helper-text' data-error='Enter the candidate party!'></span>"
                 +    "</div>"
                 +    "</div>"
